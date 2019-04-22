@@ -180,10 +180,18 @@ Double_t bb_impl_ (Double_t *x, Double_t *par)
   double mass = par [1];
 
   // Parameters for Bethe Bloch-parametrization     
-  double fParaC =  1.597546;// 1.5624;
-  double fParaD =  9.8;
-  double fParaE =  2.38;
-  double fParaF =  0.2; 
+//  double fParaC =  1.597546;// 1.5624;
+//  double fParaD =  9.8;
+//  double fParaE =  2.38;
+//  double fParaF =  0.2; 
+  double fParaC =  par [2];
+  double fParaD =  par [3];
+  double fParaE =  par [4];
+  double fParaF =  par [5];
+  double scale;
+  
+  if (par[6] - 999. < 0.1) scale = 1.; // fixed dedx scaling
+  else scale = par [6];
   
   Float_t bg, dedx;
   Float_t c, d, e, f, x1, x2, p0, dfq, d1, d2, d3;
@@ -194,13 +202,6 @@ Double_t bb_impl_ (Double_t *x, Double_t *par)
   d =  fParaD;
   e =  fParaE;
   f =  fParaF;
-  
-  { // besides this part everything is taken from na49root
-    c = par [2];
-    d = par [3];
-    e = par [4];
-    f = par [5];
-  }
   
   x1 = pow(10,(e - 1.0/3.0 * sqrt(2.0*log(10.0)/(3.0 * f))));
   x2 = pow(10,(e + 2.0/3.0 * sqrt(2.0*log(10.0)/(3.0 * f))));
@@ -223,7 +224,7 @@ Double_t bb_impl_ (Double_t *x, Double_t *par)
   
   dedx = p0*( (1+ bg*bg)/(bg*bg) * ( d + log(1+(bg*bg)) + dfq)-1.0 );
   
-  return dedx;
+  return scale * dedx;
 }
 
 Double_t bb_impl (Double_t *x, Double_t *par)
